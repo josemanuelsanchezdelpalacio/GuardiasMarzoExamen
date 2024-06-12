@@ -83,18 +83,18 @@ fun nuevaGuardiaScreenBodyContent(modifier: Modifier, navController: NavHostCont
         val mes = mCalendar.get(Calendar.MONTH)
         val dia = mCalendar.get(Calendar.DAY_OF_MONTH)
 
-        var mDatePickerDialog =
+        val mDatePickerDialog =
             DatePickerDialog(LocalContext.current, { _, anio: Int, mes: Int, dia: Int ->
                 fecha = "$dia/${mes + 1}/$anio"
             }, anio, mes, dia)
-        var mHourPickerDialog =
+        val mHourPickerDialog =
             TimePickerDialog(LocalContext.current, { _, hora: Int, minuto: Int ->
                 time = "$hora:$minuto"
             }, mCalendar.get(Calendar.HOUR_OF_DAY), mCalendar.get(Calendar.MINUTE), true)
 
 
         Text(
-            text = "Creacion de nueva guardia",
+            text = "Creación de nueva guardia",
             modifier = Modifier.padding(10.dp),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold

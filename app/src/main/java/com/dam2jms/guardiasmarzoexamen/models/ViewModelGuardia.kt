@@ -21,8 +21,7 @@ class ViewModelGuardia : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-
-    //para actualizar las guardias añadidas
+    //funcion para actualizar las guardias
     fun onDatosGuardia(profesor: String, fecha: String, time: String) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -33,26 +32,34 @@ class ViewModelGuardia : ViewModel() {
         }
     }
 
-    //busca si el profesor existe y si existe añade los datos del nombre, la fecha, la hora y el numero de guardias a la lista
+    //funcion para añadir una guardia
     fun onAddGuardia(context: Context, fecha: String, time: String) {
-
         val profesor = listadoProfesores.find { it.nombreProfesor == _uiState.value.nombreProfesor }
 
         if (profesor != null) {
             if (_uiState.value.nombreProfesor.isNotEmpty()) {
-                _uiState.update { currentState ->
-                    currentState.copy(numeroGuardias = _uiState.value.numeroGuardias.inc())
+                //compruebo que el profesor exista
+                val existingGuardia = allGuardias.find { it.nombreProfesor == _uiState.value.nombreProfesor }
+
+                if (existingGuardia != null) {
+                    //actualizacion de la guardia
+                    existingGuardia.date = fecha
+                    existingGuardia.hour = time
+                    existingGuardia.numeroGuardias++
+                } else {
+                    //creacion de una nueva guardia
+                    val nuevaGuardia = Guardia(
+                        nombreProfesor = _uiState.value.nombreProfesor,
+                        date = fecha,
+                        hour = time,
+                        numeroGuardias = 1
+                    )
+                    allGuardias.add(nuevaGuardia)
                 }
-                val nuevaGuardia = Guardia(
-                    nombreProfesor = _uiState.value.nombreProfesor,
-                    date = fecha,
-                    hour = time,
-                    numeroGuardias = _uiState.value.numeroGuardias
-                )
-                allGuardias.add(nuevaGuardia)
-                Toast.makeText(context, "Nueva guardia añadida", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(context, "Guardia actualizada", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Alguno de los campos está vacio", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Alguno de los campos está vacío", Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(context, "El profesor no existe en la lista", Toast.LENGTH_SHORT).show()
